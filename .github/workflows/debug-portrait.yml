@@ -58,14 +58,6 @@ jobs:
       - name: chmod gradlew
         run: chmod +x gradlew
 
-      - name: Create signing key
-        run: |
-          set -euo pipefail
-          mkdir -p .key
-          keytool -genkeypair -v -keystore .key/app-release.jks -storepass portrait123 -keypass portrait123 \
-            -alias portrait -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=AVBox Portrait"
-          printf '\nRELEASE_STORE_FILE=.key/app-release.jks\nRELEASE_KEY_ALIAS=portrait\nRELEASE_STORE_PASSWORD=portrait123\nRELEASE_KEY_PASSWORD=portrait123\n' >> gradle.properties
-
       - name: Build release APK
         run: ./gradlew assembleRelease --no-daemon --stacktrace
 
