@@ -321,13 +321,12 @@ class LivePlayActivity : BaseActivity() {
 
     fun applyFullscreen(full: Boolean) {
         if (fullScreen == full) return
-        vm.setRotating(full != (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE))
+        // 全屏默认锁定竖屏，不再强制横屏；横屏需点播放器的旋转按钮
+        val target = if (full) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT else orientationPolicyValue()
+        val landNow = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        vm.setRotating(!full && landNow && target == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT)
         vm.setFullscreen(full)
-        requestedOrientation = if (full) {
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        } else {
-            orientationPolicyValue()
-        }
+        requestedOrientation = target
         if (full) {
             vm.setOverlayVisible(true)
             overlay.scheduleOverlayHide()

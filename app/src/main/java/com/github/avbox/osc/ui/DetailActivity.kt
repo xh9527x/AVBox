@@ -344,7 +344,8 @@ class DetailActivity : BaseActivity(), PageHost {
     fun applyFullscreen(full: Boolean) {
         if (appliedFullscreen == full) return
         appliedFullscreen = full
-        requestedOrientation = orientationPolicyValue()
+        // 全屏默认锁定竖屏，不随手机重力自动横屏；横屏需点播放器的旋转按钮
+        requestedOrientation = if (full) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT else orientationPolicyValue()
         if (full) {
             armVideoSizeWatch()
             hideSysBar()
@@ -381,8 +382,7 @@ class DetailActivity : BaseActivity(), PageHost {
     }
 
     private fun applyVideoOrientation(portraitVideo: Boolean) {
-        if (!vm.fullScreen.value || portraitVideo) return
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        // 原逻辑：全屏时横版视频自动切 SENSOR_LANDSCAPE。已取消，保持竖屏，由旋转按钮手动切换
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
